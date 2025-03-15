@@ -40,11 +40,11 @@ prompt = tokenizer.apply_chat_template(
 
 
 def contrastive_generation(amateur, expert, prompt, max_tokens) -> str:
-    '''Implements https://arxiv.org/abs/2210.15097'''
+	'''Implements https://arxiv.org/abs/2210.15097'''
 
-    # Tokenize the prompt
+	# Tokenize the prompt
 	prompt = tokenizer(prompt)["input_ids"]
-
+	
 	# Use GPU if available
 	device = torch.device(
 		"mps" if torch.backends.mps.is_available() # (I'm coding on a Mac w/ an M1 chip)
@@ -53,10 +53,10 @@ def contrastive_generation(amateur, expert, prompt, max_tokens) -> str:
 	)
 	amateur = amateur.to(device)
 	expert = expert.to(device)
-
+	
 	# CD hyperparameter for keeping output sane
 	log_alpha = torch.log(torch.tensor(0.1)).to(device)
-
+	
 	# Generate response
 	response = []
 	for _ in range(max_tokens):
@@ -64,7 +64,7 @@ def contrastive_generation(amateur, expert, prompt, max_tokens) -> str:
 		input_tokens = torch.tensor([prompt + response]).to(device) # (1, input_length)
 		amateur_logits = amateur(input_tokens).logits[0,-1,:]
 		expert_logits = expert(input_tokens).logits[0,-1,:]
-
+		
 		# Filter out tokens that expert is unconfident in
 		expert_logits[expert_logits < torch.max(expert_logits) + log_alpha] = float("-inf")
 		
