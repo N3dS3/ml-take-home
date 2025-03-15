@@ -54,14 +54,19 @@ def contrastive_generation(amateur, expert, prompt, max_tokens) -> str:
 	amateur = amateur.to(device)
 	expert = expert.to(device)
 
+	# CD hyperparameter for keeping output sane
+	log_alpha = torch.log(torch.tensor(0.1)).to(device)
+
 	# Generate response
 	response = []
 	for _ in range(max_tokens):
-		print(_)
 		# Get amateur logits and expert logits
 		input_tokens = torch.tensor([prompt + response]).to(device) # (1, input_length)
 		amateur_logits = amateur(input_tokens).logits[0,-1,:]
 		expert_logits = expert(input_tokens).logits[0,-1,:]
+
+		# Filter out tokens that expert is unconfident in
+		expert_logits[expert_logits < torch.max(expert_logits) + log_alpha] = float("-inf")
 		
 		# Get the next token using CD objective
 		next_token = torch.argmax(expert_logits - amateur_logits).item()
