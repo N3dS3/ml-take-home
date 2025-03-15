@@ -16,6 +16,8 @@ Or again with the assumption that tokens don't span multiple words, another idea
 
 Another idea is to use transformers that were trained on somewhat random tokenizations of the same sentence. So that they don't learn weird rules such as not predicting the token "color" after the token " water" because there's already a token for " watercolor".
 
+Oh and of course, there's always fine-tuning them to use only their shared tokenizers. But that'd take data and compute. So how good of an idea this is massively depends on whether you have data and compute (and how large the models you want to use are).
+
 To be honest whatever works works and it's hard to tell without trying myself. There's a decent chance that right off the bat it doesn't need to get this messy and that the transformers would be fine as they are.
 
 # Question 2
@@ -31,3 +33,5 @@ Side note: one idea I had earlier was that instead of taking "expert_logits - am
 Oh another note: I think a great reason I'd use it in practice is that in theory, if this does what the paper suggests it does (I'd need to see more outputs to know my opinion more clearly), that's just cool. Like, it'd just generate particularly interesting outputs on purpose without you needing to do anything. Outputs that specifically were learned by a larger model but *not* by a smaller model. Which is simply just a win, in theory.
 
 So would it be used in pratice? Honestly I still won't have a strong read on this until I see more. And if I were using in practice, I feel like I'd wanna make a heckuva lotta adjustments to the idea because I'm not too keen on its form as proposed in the paper. But IMO, it seems like this idea has a ton of potential.
+
+OH OH OH actually compared to the alternative of beam search, this idea seems particularly great; it'd take so much less compute to get creativity. HUGE win. I lowkey kinda see using this method with sufficient modifications. Model might just seem so much more creative and intellegent. Still have to see more of its outputs for myself but yoooooo that's epic.
